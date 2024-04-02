@@ -1,5 +1,7 @@
 package com.techtalk.techtalkapi.controller;
 
+import com.techtalk.techtalkapi.application.login.LoginRequest;
+import com.techtalk.techtalkapi.application.login.LoginResult;
 import com.techtalk.techtalkapi.application.register.RegisterRequest;
 import com.techtalk.techtalkapi.application.register.RegisterResult;
 import com.techtalk.techtalkapi.service.AuthService;
@@ -18,4 +20,8 @@ public class AuthController {
         return authService.register(registerRequest);
     }
 
+    @PostMapping("/login")
+    public @ResponseBody LoginResult login(@RequestBody LoginRequest loginRequest){
+        return authService.login(loginRequest);
+    }
 }

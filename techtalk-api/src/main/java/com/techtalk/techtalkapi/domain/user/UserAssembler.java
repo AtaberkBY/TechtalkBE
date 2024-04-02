@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Component
 public class UserAssembler {
 
-    public User applyUser(RegisterRequest request, String encodedPassword){
+    public User applyUserWithRegisterRequest(RegisterRequest request, String encodedPassword) {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setName(request.getName());

@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/techtalk-api.iml" filepath="$PROJECT_DIR$/.idea/techtalk-api.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/techtalk-api.techtalk-api.main~1.iml" filepath="$PROJECT_DIR$/.idea/modules/techtalk-api.techtalk-api.main~1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/techtalk-api.techtalk-api.main.iml" filepath="$PROJECT_DIR$/.idea/modules/techtalk-api.techtalk-api.main.iml" />
     </modules>
   </component>
 </project>

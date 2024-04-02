@@ -9,6 +9,13 @@ public class AuthValidator {
         if (request.getUsername().length() < 4) {
             return "auth.username-length.invalid";
         }
+        if (request.getPassword().length() < 8){
+            return "auth.password-length.invalid";
+        }
+        if (request.getPassword().chars().noneMatch(Character::isUpperCase)){
+            return "auth.password.upper.required";
+        }
+
         return null;
     }
 }
