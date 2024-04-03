@@ -1,6 +1,5 @@
-package com.techtalk.techtalkapi.assembler;
+package com.techtalk.techtalkapi.application.login;
 
-import com.techtalk.techtalkapi.application.login.LoginResult;
 import org.springframework.stereotype.Component;
 
 @Component

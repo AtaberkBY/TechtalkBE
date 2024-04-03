@@ -4,6 +4,8 @@ import com.techtalk.techtalkapi.application.login.LoginRequest;
 import com.techtalk.techtalkapi.application.login.LoginResult;
 import com.techtalk.techtalkapi.application.register.RegisterRequest;
 import com.techtalk.techtalkapi.application.register.RegisterResult;
+import com.techtalk.techtalkapi.application.forgotpassword.ForgotPasswordRequest;
+import com.techtalk.techtalkapi.application.forgotpassword.ForgotPasswordResult;
 import com.techtalk.techtalkapi.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -24,4 +26,9 @@ public class AuthController {
     public @ResponseBody LoginResult login(@RequestBody LoginRequest loginRequest){
         return authService.login(loginRequest);
     }
+    @PostMapping("/forgotpassword")
+    public @ResponseBody ForgotPasswordResult forgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest){
+        return authService.forgotPassword(forgotPasswordRequest);
+    }
+
 }

@@ -4,9 +4,14 @@ import com.techtalk.techtalkapi.application.login.LoginRequest;
 import com.techtalk.techtalkapi.application.login.LoginResult;
 import com.techtalk.techtalkapi.application.register.RegisterRequest;
 import com.techtalk.techtalkapi.application.register.RegisterResult;
-import com.techtalk.techtalkapi.assembler.LoginResultAssembler;
-import com.techtalk.techtalkapi.assembler.RegisterResultAssembler;
+import com.techtalk.techtalkapi.application.forgotpassword.ForgotPasswordRequest;
+import com.techtalk.techtalkapi.application.forgotpassword.ForgotPasswordResult;
+import com.techtalk.techtalkapi.application.login.LoginResultAssembler;
+import com.techtalk.techtalkapi.application.register.RegisterResultAssembler;
+import com.techtalk.techtalkapi.data.ForgotPasswordRepository;
 import com.techtalk.techtalkapi.data.UsersRepository;
+import com.techtalk.techtalkapi.domain.forgotpassword.ForgotPassword;
+import com.techtalk.techtalkapi.domain.forgotpassword.ForgotPasswordAssembler;
 import com.techtalk.techtalkapi.domain.user.User;
 import com.techtalk.techtalkapi.domain.user.UserAssembler;
 import com.techtalk.techtalkapi.validate.AuthValidator;
@@ -21,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -28,16 +34,19 @@ import java.util.Optional;
 public class AuthService {
 
     private final UsersRepository usersRepository;
+    private final ForgotPasswordRepository forgotPasswordRepository;
     private final AuthValidator authValidator;
     private final RegisterResultAssembler registerResultAssembler;
     private final UserAssembler userAssembler;
     private final LoginResultAssembler loginResultAssembler;
+    private final EmailService emailService;
+    private final ForgotPasswordAssembler forgotPasswordAssembler;
 
     public RegisterResult register(RegisterRequest request) {
         log.info("Register started with Username: {}", request.getUsername());
 
         try {
-            if (usersRepository.existsByUsername(request.getUsername())) {
+            if (usersRepository.existsByUsername(request.getUsername()) || usersRepository.existsByEmail(request.getEmail())) {
                 return registerResultAssembler.applyUserExistResult();
             }
 
@@ -82,6 +91,31 @@ public class AuthService {
         } catch (Exception ex) {
             log.error("Unexpected error got login with username: {}", request.getUsername());
             throw new RuntimeException(); //TODO
+        }
+    }
+
+    public ForgotPasswordResult forgotPassword(ForgotPasswordRequest request){
+        log.info("Forgot Password started with email: {}", request.getEmail());
+        try {
+            Optional<User> userOptional = usersRepository.findByEmail(request.getEmail());
+            if (userOptional.isEmpty()) {
+                return new ForgotPasswordResult(false,"auth.user.doesNotExist");
+            }
+
+            User user = userOptional.get();
+            String forgotToken = UUID.randomUUID().toString();
+
+            ForgotPassword forgotPassword = forgotPasswordAssembler.applyForgotPassword(forgotToken, user.getEmail());
+            forgotPasswordRepository.save(forgotPassword);
+
+            String emailResult = emailService.sendSimpleMail(user.getEmail(),forgotToken);
+            if(emailResult.isEmpty()){
+                return new ForgotPasswordResult(false,"Sistem hatası...");
+            }
+            return new ForgotPasswordResult(true,emailResult);
+        }
+        catch (Exception ex){
+            throw new RuntimeException();
         }
     }
 

@@ -1,7 +1,5 @@
-package com.techtalk.techtalkapi.assembler;
+package com.techtalk.techtalkapi.application.register;
 
-import com.techtalk.techtalkapi.application.register.RegisterRequest;
-import com.techtalk.techtalkapi.application.register.RegisterResult;
 import org.springframework.stereotype.Component;
 
 @Component
