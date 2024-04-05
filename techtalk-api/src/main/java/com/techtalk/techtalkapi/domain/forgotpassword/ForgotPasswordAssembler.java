@@ -11,6 +11,7 @@ public class ForgotPasswordAssembler {
         forgotPassword.setEmail(email);
         forgotPassword.setToken(token);
         forgotPassword.setCreatedDate(LocalDateTime.now());
+        forgotPassword.setActive(true);
 
         return forgotPassword;
     }

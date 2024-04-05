@@ -8,6 +8,8 @@ import com.techtalk.techtalkapi.application.forgotpassword.ForgotPasswordRequest
 import com.techtalk.techtalkapi.application.forgotpassword.ForgotPasswordResult;
 import com.techtalk.techtalkapi.application.login.LoginResultAssembler;
 import com.techtalk.techtalkapi.application.register.RegisterResultAssembler;
+import com.techtalk.techtalkapi.application.resetpassword.ResetPasswordRequest;
+import com.techtalk.techtalkapi.application.resetpassword.ResetPasswordResult;
 import com.techtalk.techtalkapi.data.ForgotPasswordRepository;
 import com.techtalk.techtalkapi.data.UsersRepository;
 import com.techtalk.techtalkapi.domain.forgotpassword.ForgotPassword;
@@ -23,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
@@ -117,6 +120,52 @@ public class AuthService {
         catch (Exception ex){
             throw new RuntimeException();
         }
+    }
+
+    public ResetPasswordResult resetPassword(ResetPasswordRequest request, String token){
+        try{
+            Optional<ForgotPassword> forgotPasswordOptional = forgotPasswordRepository.findByToken(token);
+
+            if(forgotPasswordOptional.isEmpty()){
+                return new ResetPasswordResult(false, "Kayıtlı token bulunamadı.");
+            }
+
+            ForgotPassword forgotPassword = forgotPasswordOptional.get();
+
+            if(forgotPassword.getCreatedDate().plusDays(1).isBefore(LocalDateTime.now())){
+                if(forgotPassword.isActive()){
+                    deactivateToken(forgotPassword);
+                }
+                return new ResetPasswordResult(false,"Şifre sıfırlama linkinin süresi dolmuştur.");
+            }
+
+            if(!forgotPassword.isActive()){
+                return new ResetPasswordResult(false,"Şifre sıfırlama linki aktif değildir.");
+            }
+
+            Optional<User> userOptional = usersRepository.findByEmail(forgotPassword.getEmail());
+
+            if (userOptional.isEmpty()){
+                return new ResetPasswordResult(false,"Kayıtlı kullanıcı bulunamadı.");
+            }
+
+            User user = userOptional.get();
+
+            if(request.getPassword().equals(request.getConfirmPassword())){
+                user.setPassword(request.getPassword());
+                deactivateToken(forgotPassword);
+                usersRepository.save(user);
+                return new ResetPasswordResult(true, "Şifreniz Başarıyla Değişti.");
+            }
+            return new ResetPasswordResult(false, "Şifre ve Şifre onayla alanları aynı olmalıdır.");
+        }
+        catch (Exception ex){
+            throw new RuntimeException();
+        }
+    }
+    private void deactivateToken(ForgotPassword forgotPassword){
+        forgotPassword.setActive(false);
+        forgotPasswordRepository.save(forgotPassword);
     }
 
     private static String encodePassword(String password) {

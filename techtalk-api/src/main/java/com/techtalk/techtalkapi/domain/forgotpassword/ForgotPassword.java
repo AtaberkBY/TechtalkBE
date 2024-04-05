@@ -19,4 +19,5 @@ public class ForgotPassword {
     private String email;
     @Column(name = "created_date")
     private LocalDateTime createdDate;
+    private boolean isActive;
 }
