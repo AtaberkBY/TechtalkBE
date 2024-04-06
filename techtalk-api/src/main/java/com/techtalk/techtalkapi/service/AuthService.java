@@ -152,7 +152,8 @@ public class AuthService {
             User user = userOptional.get();
 
             if(request.getPassword().equals(request.getConfirmPassword())){
-                user.setPassword(request.getPassword());
+                String encodedPassword = encodePassword(request.getPassword());
+                user.setPassword(encodedPassword);
                 deactivateToken(forgotPassword);
                 usersRepository.save(user);
                 return new ResetPasswordResult(true, "Şifreniz Başarıyla Değişti.");

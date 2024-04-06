@@ -39,5 +39,4 @@ public class AuthController {
         return authService.resetPassword(request,token);
     }
 
-
 }
