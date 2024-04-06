@@ -1,12 +1,12 @@
 package com.techtalk.techtalkapi.service;
 
-import com.techtalk.techtalkapi.application.login.LoginRequest;
-import com.techtalk.techtalkapi.application.login.LoginResult;
-import com.techtalk.techtalkapi.application.register.RegisterRequest;
-import com.techtalk.techtalkapi.application.register.RegisterResult;
 import com.techtalk.techtalkapi.application.forgotpassword.ForgotPasswordRequest;
 import com.techtalk.techtalkapi.application.forgotpassword.ForgotPasswordResult;
+import com.techtalk.techtalkapi.application.login.LoginRequest;
+import com.techtalk.techtalkapi.application.login.LoginResult;
 import com.techtalk.techtalkapi.application.login.LoginResultAssembler;
+import com.techtalk.techtalkapi.application.register.RegisterRequest;
+import com.techtalk.techtalkapi.application.register.RegisterResult;
 import com.techtalk.techtalkapi.application.register.RegisterResultAssembler;
 import com.techtalk.techtalkapi.application.resetpassword.ResetPasswordRequest;
 import com.techtalk.techtalkapi.application.resetpassword.ResetPasswordResult;
@@ -66,7 +66,7 @@ public class AuthService {
             return registerResultAssembler.applySuccessResult();
         } catch (Exception ex) {
             log.error("Unexpected error got register with username: {}", request.getUsername());
-            throw new RuntimeException(); //TODO
+            throw new RuntimeException(ex);
         }
     }
 
@@ -76,7 +76,7 @@ public class AuthService {
         try {
             Optional<User> userOptional = usersRepository.findByUsername(request.getUsername());
             if (userOptional.isEmpty()) {
-                return loginResultAssembler.applyUserNotFoundResult("auth.user.exist");
+                return loginResultAssembler.applyUserNotFoundResult();
             }
 
             User user = userOptional.get();
@@ -93,7 +93,7 @@ public class AuthService {
             return loginResultAssembler.applySuccessResult(jwtToken);
         } catch (Exception ex) {
             log.error("Unexpected error got login with username: {}", request.getUsername());
-            throw new RuntimeException(); //TODO
+            throw new RuntimeException(ex);
         }
     }
 
@@ -118,7 +118,7 @@ public class AuthService {
             return new ForgotPasswordResult(true,emailResult);
         }
         catch (Exception ex){
-            throw new RuntimeException();
+            throw new RuntimeException(ex);
         }
     }
 
@@ -161,7 +161,7 @@ public class AuthService {
             return new ResetPasswordResult(false, "Şifre ve Şifre onayla alanları aynı olmalıdır.");
         }
         catch (Exception ex){
-            throw new RuntimeException();
+            throw new RuntimeException(ex);
         }
     }
     private void deactivateToken(ForgotPassword forgotPassword){
