@@ -90,6 +90,7 @@ public class AuthService {
 
             String jwtToken = generateJwtToken(user.getUsername());
 
+            log.info("Login successfull with Username: {}", request.getUsername());
             return loginResultAssembler.applySuccessResult(jwtToken);
         } catch (Exception ex) {
             log.error("Unexpected error got login with username: {}", request.getUsername());

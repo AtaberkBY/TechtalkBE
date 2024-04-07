@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/profile")
 @AllArgsConstructor
 public class ProfileController {
-
     private final ProfileService profileService;
 
     @GetMapping("/{username}")

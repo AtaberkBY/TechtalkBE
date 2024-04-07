@@ -13,6 +13,7 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public class ProfileService {
+
     private final UsersRepository usersRepository;
 
     public ProfileResult profile(String username) {
