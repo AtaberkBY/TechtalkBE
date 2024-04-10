@@ -1,11 +1,11 @@
 package com.techtalk.techtalkapi.controller;
 
+import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateRequest;
+import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateResult;
 import com.techtalk.techtalkapi.domain.subject.Subject;
 import com.techtalk.techtalkapi.service.SubjectService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,5 +19,10 @@ public class SubjectController {
     @GetMapping()
     public List<Subject> profile() {
         return subjectService.getAllSubjects();
+    }
+
+    @PostMapping("/create")
+    public @ResponseBody SubjectCreateResult subjectCreate(@RequestBody SubjectCreateRequest subjectCreateRequest){
+        return subjectService.subjectCreate(subjectCreateRequest);
     }
 }
