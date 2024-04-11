@@ -171,7 +171,7 @@ public class AuthService {
     }
 
     private static String encodePassword(String password) {
-        return BCrypt.hashpw(password, BCrypt.gensalt());
+        return BCrypt.hashpw(password, BCrypt.gensalt(12));
     }
 
     private static boolean checkPassword(String password, String hashedPassword) {
