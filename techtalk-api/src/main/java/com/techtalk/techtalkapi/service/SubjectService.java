@@ -3,6 +3,7 @@ package com.techtalk.techtalkapi.service;
 import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateAssembler;
 import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateRequest;
 import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateResult;
+import com.techtalk.techtalkapi.application.subjectget.GetSubjectResult;
 import com.techtalk.techtalkapi.data.SubjectRepository;
 import com.techtalk.techtalkapi.domain.subject.Subject;
 import com.techtalk.techtalkapi.domain.subject.SubjectAssembler;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -32,11 +34,11 @@ public class SubjectService {
         }
     }
 
-    public SubjectCreateResult subjectCreate(SubjectCreateRequest request){
-        log.info("Subject creation started with subject name: {}",request.getTopic());
+    public SubjectCreateResult subjectCreate(SubjectCreateRequest request) {
+        log.info("Subject creation started with subject name: {}", request.getTopic());
         try {
             String validateMessage = subjectValidator.validateSubjectCreate(request);
-            if (Objects.nonNull(validateMessage)){
+            if (Objects.nonNull(validateMessage)) {
                 return subjectCreateAssembler.applyFailureResult(validateMessage);
             }
 
@@ -44,8 +46,17 @@ public class SubjectService {
             subjectRepository.save(subject);
 
             return subjectCreateAssembler.applySuccessResult();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
-        catch (Exception ex){
+    }
+
+    public GetSubjectResult getSubject(Long subjectId) {
+        log.info("Get Subject started with subjectId: {}", subjectId);
+        try {
+            Optional<Subject> subject = subjectRepository.findById(subjectId);
+            return subject.map(value -> new GetSubjectResult(true, value)).orElseGet(() -> new GetSubjectResult(false, null));
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }

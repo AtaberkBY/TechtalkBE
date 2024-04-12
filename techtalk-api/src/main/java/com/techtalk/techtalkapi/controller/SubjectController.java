@@ -2,6 +2,7 @@ package com.techtalk.techtalkapi.controller;
 
 import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateRequest;
 import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateResult;
+import com.techtalk.techtalkapi.application.subjectget.GetSubjectResult;
 import com.techtalk.techtalkapi.domain.subject.Subject;
 import com.techtalk.techtalkapi.service.SubjectService;
 import lombok.AllArgsConstructor;
@@ -17,12 +18,17 @@ public class SubjectController {
     private final SubjectService subjectService;
 
     @GetMapping()
-    public List<Subject> profile() {
+    public List<Subject> subjects() {
         return subjectService.getAllSubjects();
     }
 
     @PostMapping("/create")
     public @ResponseBody SubjectCreateResult subjectCreate(@RequestBody SubjectCreateRequest subjectCreateRequest){
         return subjectService.subjectCreate(subjectCreateRequest);
+    }
+
+    @GetMapping("/{subjectId}")
+    public GetSubjectResult subjects(@PathVariable Long subjectId) {
+        return subjectService.getSubject(subjectId);
     }
 }

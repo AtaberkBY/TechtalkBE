@@ -10,8 +10,8 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:8081") // İzin verilen origin URL'leri
-                .allowedMethods("GET", "POST", "PUT", "DELETE") // İzin verilen HTTP metodları
-                .allowCredentials(true); // Kimlik bilgilerini gönderirken izin ver
+                .allowedOrigins("http://localhost:8081")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowCredentials(true);
     }
 }
