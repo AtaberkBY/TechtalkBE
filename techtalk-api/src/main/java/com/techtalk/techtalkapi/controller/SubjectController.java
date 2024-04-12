@@ -31,4 +31,9 @@ public class SubjectController {
     public GetSubjectResult subjects(@PathVariable Long subjectId) {
         return subjectService.getSubject(subjectId);
     }
+
+    @PostMapping("/delete/{subjectId}")
+    public boolean subjectDelete(@PathVariable Long subjectId){
+        return subjectService.deleteSubject(subjectId);
+    }
 }

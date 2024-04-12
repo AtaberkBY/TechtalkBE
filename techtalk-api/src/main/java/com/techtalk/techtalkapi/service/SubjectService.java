@@ -54,8 +54,26 @@ public class SubjectService {
     public GetSubjectResult getSubject(Long subjectId) {
         log.info("Get Subject started with subjectId: {}", subjectId);
         try {
-            Optional<Subject> subject = subjectRepository.findById(subjectId);
-            return subject.map(value -> new GetSubjectResult(true, value)).orElseGet(() -> new GetSubjectResult(false, null));
+            Optional<Subject> subjectOptional = subjectRepository.findById(subjectId);
+            return subjectOptional.map(value -> new GetSubjectResult(true, value)).orElseGet(() -> new GetSubjectResult(false, null));
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public boolean deleteSubject(Long subjectId) {
+        log.info("Delete Subject started with subjectId: {}", subjectId);
+        try {
+            Optional<Subject> subjectOptional = subjectRepository.findById(subjectId);
+            if (subjectOptional.isEmpty()) {
+                return false;
+            }
+            Subject subject = subjectOptional.get();
+            subject.setActive(false);
+            subjectRepository.save(subject);
+
+            log.info("Delete Subject finished with subjectId: {}", subjectId);
+            return true;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
