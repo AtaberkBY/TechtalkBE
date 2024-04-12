@@ -28,7 +28,7 @@ public class LoginResultAssembler {
     public LoginResult applySuccessResult(String jwtToken) {
         return new LoginResult(
                 true,
-                "",
+                null,
                 jwtToken
         );
     }
