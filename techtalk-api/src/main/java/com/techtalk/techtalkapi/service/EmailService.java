@@ -32,6 +32,6 @@ public class EmailService {
         }
     }
     private String prepareURL(String token){
-        return ("http://localhost:8081/reset-password?token="+token);
+        return ("http://localhost:8081/reset_password/sifre_sıfırlama?token="+token);
     }
 }

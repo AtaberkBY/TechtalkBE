@@ -124,6 +124,8 @@ public class AuthService {
     }
 
     public ResetPasswordResult resetPassword(ResetPasswordRequest request, String token){
+        log.info("Reset Password started with email: {}", request.getPassword());
+
         try{
             Optional<ForgotPassword> forgotPasswordOptional = forgotPasswordRepository.findByToken(token);
 
