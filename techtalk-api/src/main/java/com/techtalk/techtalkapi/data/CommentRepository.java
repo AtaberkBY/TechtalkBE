@@ -1,6 +1,6 @@
 package com.techtalk.techtalkapi.data;
 
-import com.techtalk.techtalkapi.domain.comment.Comment;
+import com.techtalk.techtalkapi.domain.model.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

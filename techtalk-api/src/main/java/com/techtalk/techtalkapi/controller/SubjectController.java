@@ -3,7 +3,7 @@ package com.techtalk.techtalkapi.controller;
 import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateRequest;
 import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateResult;
 import com.techtalk.techtalkapi.application.subjectget.GetSubjectResult;
-import com.techtalk.techtalkapi.domain.subject.Subject;
+import com.techtalk.techtalkapi.domain.model.Subject;
 import com.techtalk.techtalkapi.service.SubjectService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;

@@ -1,6 +1,7 @@
-package com.techtalk.techtalkapi.domain.subject;
+package com.techtalk.techtalkapi.domain.assembler;
 
 import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateRequest;
+import com.techtalk.techtalkapi.domain.model.Subject;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,5 @@ public class SubjectAssembler {
         subject.setActive(true);
 
         return subject;
-
     }
 }

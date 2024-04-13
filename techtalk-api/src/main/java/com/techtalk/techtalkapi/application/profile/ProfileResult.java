@@ -1,6 +1,6 @@
 package com.techtalk.techtalkapi.application.profile;
 
-import com.techtalk.techtalkapi.domain.user.User;
+import com.techtalk.techtalkapi.domain.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

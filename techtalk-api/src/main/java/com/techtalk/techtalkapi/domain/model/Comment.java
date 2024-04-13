@@ -1,4 +1,4 @@
-package com.techtalk.techtalkapi.domain.comment;
+package com.techtalk.techtalkapi.domain.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;

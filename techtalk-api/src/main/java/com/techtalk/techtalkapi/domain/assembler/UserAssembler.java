@@ -1,6 +1,7 @@
-package com.techtalk.techtalkapi.domain.user;
+package com.techtalk.techtalkapi.domain.assembler;
 
 import com.techtalk.techtalkapi.application.register.RegisterRequest;
+import com.techtalk.techtalkapi.domain.model.User;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;

@@ -1,5 +1,6 @@
-package com.techtalk.techtalkapi.domain.forgotpassword;
+package com.techtalk.techtalkapi.domain.assembler;
 
+import com.techtalk.techtalkapi.domain.model.ForgotPassword;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package com.techtalk.techtalkapi.domain.forgotpassword;
+package com.techtalk.techtalkapi.domain.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

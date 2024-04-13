@@ -1,7 +1,7 @@
 package com.techtalk.techtalkapi.application.subjectget;
 
-import com.techtalk.techtalkapi.domain.comment.Comment;
-import com.techtalk.techtalkapi.domain.subject.Subject;
+import com.techtalk.techtalkapi.domain.model.Comment;
+import com.techtalk.techtalkapi.domain.model.Subject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
