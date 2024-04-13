@@ -4,7 +4,9 @@ import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateAssembler
 import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateRequest;
 import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateResult;
 import com.techtalk.techtalkapi.application.subjectget.GetSubjectResult;
+import com.techtalk.techtalkapi.data.CommentRepository;
 import com.techtalk.techtalkapi.data.SubjectRepository;
+import com.techtalk.techtalkapi.domain.comment.Comment;
 import com.techtalk.techtalkapi.domain.subject.Subject;
 import com.techtalk.techtalkapi.domain.subject.SubjectAssembler;
 import com.techtalk.techtalkapi.validate.SubjectValidator;
@@ -24,6 +26,7 @@ public class SubjectService {
     private final SubjectAssembler subjectAssembler;
     private final SubjectCreateAssembler subjectCreateAssembler;
     private final SubjectValidator subjectValidator;
+    private final CommentRepository commentRepository;
 
     public List<Subject> getAllSubjects() {
         log.info("Get All Subject started");
@@ -55,7 +58,13 @@ public class SubjectService {
         log.info("Get Subject started with subjectId: {}", subjectId);
         try {
             Optional<Subject> subjectOptional = subjectRepository.findById(subjectId);
-            return subjectOptional.map(value -> new GetSubjectResult(true, value)).orElseGet(() -> new GetSubjectResult(false, null));
+            if(subjectOptional.isEmpty()) {
+                return new GetSubjectResult(false, null, null);
+            }
+            List<Comment> comments = commentRepository.findAllBySubjectId(subjectId);
+
+            log.info("Get Subject finished with subjectId: {}", subjectId);
+            return new GetSubjectResult(true, subjectOptional.get(), comments);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
