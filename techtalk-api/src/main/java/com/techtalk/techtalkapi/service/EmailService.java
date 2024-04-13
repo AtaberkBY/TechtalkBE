@@ -24,7 +24,7 @@ public class EmailService {
             mailMessage.setText(prepareURL(token));
             mailMessage.setSubject("Password Forgot Redirect Link");
             javaMailSender.send(mailMessage);
-            return "Mail Sent Successfully...";
+            return "Şifre sıfırlama maili "+email+" adresine gönderildi. Spam kutunuzu kontrol etmeyi unutmayın";
         }
 
         catch (Exception e) {
@@ -32,6 +32,6 @@ public class EmailService {
         }
     }
     private String prepareURL(String token){
-        return ("http://localhost:8081/reset-password?token="+token);
+        return ("http://localhost:8081/reset_password/sifre_sıfırlama?token="+token);
     }
 }

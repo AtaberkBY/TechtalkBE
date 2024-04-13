@@ -103,7 +103,7 @@ public class AuthService {
         try {
             Optional<User> userOptional = usersRepository.findByEmail(request.getEmail());
             if (userOptional.isEmpty()) {
-                return new ForgotPasswordResult(false,"auth.user.doesNotExist");
+                return new ForgotPasswordResult(false,"Bu email ile kayıtlı bir hesap bulunmamaktadır.");
             }
 
             User user = userOptional.get();
@@ -124,6 +124,8 @@ public class AuthService {
     }
 
     public ResetPasswordResult resetPassword(ResetPasswordRequest request, String token){
+        log.info("Reset Password started with email: {}", request.getPassword());
+
         try{
             Optional<ForgotPassword> forgotPasswordOptional = forgotPasswordRepository.findByToken(token);
 
