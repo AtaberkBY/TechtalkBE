@@ -41,4 +41,9 @@ public class SubjectController {
     public List<Subject> popularSubjects() {
         return subjectService.getPopularSubjects();
     }
+
+    @PostMapping("/like/{subjectId}")
+    public boolean subjectLike(@PathVariable Long subjectId) {
+        return subjectService.likeSubject(subjectId);
+    }
 }

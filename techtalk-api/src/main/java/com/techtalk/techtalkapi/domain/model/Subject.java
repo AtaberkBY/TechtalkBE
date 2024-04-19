@@ -21,8 +21,11 @@ public class Subject {
     private String message;
     private String topic;
     private String tag;
-    private int like_count;
-    private int dislike_count;
-    private LocalDateTime created_date;
+    @Column(name = "like_count")
+    private int likeCount;
+    @Column(name = "dislike_count")
+    private int dislikeCount;
+    @Column(name = "created_date")
+    private LocalDateTime createdDate;
     private boolean isActive;
 }

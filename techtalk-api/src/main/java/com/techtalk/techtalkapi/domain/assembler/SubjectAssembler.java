@@ -15,9 +15,9 @@ public class SubjectAssembler {
         subject.setMessage(request.getMessage());
         subject.setTopic(request.getTopic());
         subject.setTag(request.getTag());
-        subject.setLike_count(0);
-        subject.setDislike_count(0);
-        subject.setCreated_date(LocalDateTime.now());
+        subject.setLikeCount(0);
+        subject.setDislikeCount(0);
+        subject.setCreatedDate(LocalDateTime.now());
         subject.setActive(true);
 
         return subject;

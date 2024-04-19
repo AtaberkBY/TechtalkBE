@@ -96,7 +96,7 @@ public class SubjectService {
         try {
             List<Subject> todaySubjects = subjectRepository.getAllByIsActive(true)
                     .stream()
-                    .filter(subject -> subject.getCreated_date().toLocalDate().isEqual(LocalDate.now()))
+                    .filter(subject -> subject.getCreatedDate().toLocalDate().isEqual(LocalDate.now()))
                     .toList();
 
             Map<Subject, Double> subjectScores = todaySubjects.stream()
@@ -119,9 +119,27 @@ public class SubjectService {
         }
     }
 
+    public boolean likeSubject(Long subjectId) {
+        log.info("Like Subject started with subjectId: {}", subjectId);
+        try {
+            Optional<Subject> subjectOptional = subjectRepository.findById(subjectId);
+            if (subjectOptional.isEmpty()) {
+                return false;
+            }
+            Subject subject = subjectOptional.get();
+            subject.setLikeCount(subject.getLikeCount() + 1);
+            subjectRepository.save(subject);
+
+            log.info("Like Subject finished with subjectId: {}", subjectId);
+            return true;
+        } catch (Exception ex){
+            return false;
+        }
+    }
+
     private double calculateScore(Subject subject) {
-        double score = 0.1 * subject.getLike_count();
-        score += subject.getDislike_count() * -0.1;
+        double score = 0.1 * subject.getLikeCount();
+        score += subject.getDislikeCount() * -0.1;
         return score;
     }
 }
