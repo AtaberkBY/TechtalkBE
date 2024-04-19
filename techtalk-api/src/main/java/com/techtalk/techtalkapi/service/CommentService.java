@@ -17,12 +17,12 @@ public class CommentService {
     private final CommentAssembler commentAssembler;
 
     public CreateCommentResult create(Long subjectId, CreateCommentRequest request) {
-        log.info("Create comment with subject id {}, userId: {}", subjectId, request.getUserId());
+        log.info("Create comment with subject id {}", subjectId);
         try {
             Comment comment = commentAssembler.applyCommentWithCreateRequest(subjectId, request);
             commentRepository.save(comment);
 
-            log.info("Created comment with subject id {}, userId: {}", subjectId, request.getUserId());
+            log.info("Created comment with subject id {}", subjectId);
             return new CreateCommentResult(true, "Yorum Oluşturuldu.");
         } catch (Exception ex) {
             log.error("Create comment error with subjectId: {}, error: {}", subjectId, ex.getMessage());

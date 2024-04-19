@@ -18,8 +18,7 @@ public class Comment {
     private Long id;
     @Column(name = "subject_id")
     private Long subjectId;
-    @Column(name = "user_id")
-    private Long userId;
+    private String username;
     private String message;
     @Column(name = "like_count")
     private int likeCount;

@@ -10,6 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateCommentRequest {
-    private Long userId; //TODO Burada jwtToken alınıp backend tarafında token ile user bulunabilir
+    private String username;
     private String message;
 }

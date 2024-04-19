@@ -12,7 +12,7 @@ public class CommentAssembler {
     public Comment applyCommentWithCreateRequest(Long subjectId,CreateCommentRequest request){
         Comment comment = new Comment();
         comment.setSubjectId(subjectId);
-        comment.setUserId(request.getUserId());
+        comment.setUsername(request.getUsername());
         comment.setMessage(request.getMessage());
         comment.setLikeCount(0);
         comment.setDislikeCount(0);
