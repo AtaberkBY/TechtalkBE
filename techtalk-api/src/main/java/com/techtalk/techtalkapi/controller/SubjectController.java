@@ -36,4 +36,9 @@ public class SubjectController {
     public boolean subjectDelete(@PathVariable Long subjectId){
         return subjectService.deleteSubject(subjectId);
     }
+
+    @GetMapping("/popular")
+    public List<Subject> popularSubjects() {
+        return subjectService.getPopularSubjects();
+    }
 }

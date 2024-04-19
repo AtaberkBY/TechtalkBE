@@ -14,9 +14,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -58,7 +61,7 @@ public class SubjectService {
         log.info("Get Subject started with subjectId: {}", subjectId);
         try {
             Optional<Subject> subjectOptional = subjectRepository.findById(subjectId);
-            if(subjectOptional.isEmpty()) {
+            if (subjectOptional.isEmpty()) {
                 return new GetSubjectResult(false, null, null);
             }
             List<Comment> comments = commentRepository.findAllBySubjectId(subjectId);
@@ -86,5 +89,39 @@ public class SubjectService {
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    public List<Subject> getPopularSubjects() {
+        log.info("Get Popular Subjects started");
+        try {
+            List<Subject> todaySubjects = subjectRepository.getAllByIsActive(true)
+                    .stream()
+                    .filter(subject -> subject.getCreated_date().toLocalDate().isEqual(LocalDate.now()))
+                    .toList();
+
+            Map<Subject, Double> subjectScores = todaySubjects.stream()
+                    .collect(Collectors.toMap(
+                            subject -> subject,
+                            this::calculateScore
+                    ));
+
+            List<Subject> popularSubjects = subjectScores.entrySet()
+                    .stream()
+                    .sorted((entry1, entry2) -> Double.compare(entry2.getValue(), entry1.getValue()))
+                    .limit(3)
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList());
+
+            log.info("Get Popular Subjects finished with popular subject count: {}", popularSubjects.size());
+            return popularSubjects;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private double calculateScore(Subject subject) {
+        double score = 0.1 * subject.getLike_count();
+        score += subject.getDislike_count() * -0.1;
+        return score;
     }
 }
