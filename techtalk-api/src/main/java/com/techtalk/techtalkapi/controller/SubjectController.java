@@ -32,7 +32,7 @@ public class SubjectController {
         return subjectService.getSubject(subjectId);
     }
 
-    @PostMapping("/delete/{subjectId}")
+    @DeleteMapping("/delete/{subjectId}")
     public boolean subjectDelete(@PathVariable Long subjectId){
         return subjectService.deleteSubject(subjectId);
     }
@@ -42,7 +42,7 @@ public class SubjectController {
         return subjectService.getPopularSubjects();
     }
 
-    @PostMapping("/like/{subjectId}")
+    @PutMapping("/like/{subjectId}")
     public boolean subjectLike(@PathVariable Long subjectId) {
         return subjectService.likeSubject(subjectId);
     }
