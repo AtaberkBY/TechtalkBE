@@ -5,20 +5,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "forgot_password")
-public class ForgotPassword {
+@Table(name = "comment_like")
+public class CommentLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String token;
-    private String email;
-    @Column(name = "created_date")
-    private LocalDateTime createdDate;
-    private boolean isActive;
+    private Long commentId;
+    private String username;
+
+    public CommentLike(Long commentId, String username) {
+        this.commentId = commentId;
+        this.username = username;
+    }
 }

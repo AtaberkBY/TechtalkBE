@@ -2,9 +2,12 @@ package com.techtalk.techtalkapi.service;
 
 import com.techtalk.techtalkapi.application.commentcreate.CreateCommentRequest;
 import com.techtalk.techtalkapi.application.commentcreate.CreateCommentResult;
+import com.techtalk.techtalkapi.application.commentlike.LikeCommentRequest;
+import com.techtalk.techtalkapi.data.CommentLikesRepository;
 import com.techtalk.techtalkapi.data.CommentRepository;
 import com.techtalk.techtalkapi.domain.assembler.CommentAssembler;
 import com.techtalk.techtalkapi.domain.model.Comment;
+import com.techtalk.techtalkapi.domain.model.CommentLike;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final CommentAssembler commentAssembler;
+    private final CommentLikesRepository commentLikesRepository;
 
     public CreateCommentResult create(Long subjectId, CreateCommentRequest request) {
         log.info("Create comment with subject id {}", subjectId);
@@ -43,7 +47,36 @@ public class CommentService {
             log.info("Deleted comment with commentId {}", commentId);
             return true;
         } catch (Exception ex) {
-            log.error("Delete comment error with commentId {}", commentId);
+            log.error("Delete comment error with commentId {}, error: {}", commentId, ex.getMessage());
+            return false;
+        }
+    }
+
+    public boolean like(LikeCommentRequest request) {
+        log.info("Like comment with commentId {}, username: {}", request.getCommentId(), request.getUsername());
+        try {
+            Comment comment = commentRepository.findById(request.getCommentId()).orElse(null);
+            if (comment == null) {
+                return false;
+            }
+
+            if (commentLikesRepository.existsByUsernameAndCommentId(request.getUsername(), request.getCommentId())) {
+                comment.setLikeCount(comment.getLikeCount() - 1);
+                commentRepository.save(comment);
+                commentLikesRepository.delete(commentLikesRepository.findByUsernameAndCommentId(request.getUsername(), request.getCommentId()));
+
+                log.info("Unliked comment with commentId {} and username {}", request.getCommentId(), request.getUsername());
+                return true;
+            }
+
+            comment.setLikeCount(comment.getLikeCount() + 1);
+            commentRepository.save(comment);
+            commentLikesRepository.save(new CommentLike(request.getCommentId(), request.getUsername()));
+
+            log.info("Liked comment with commentId {} and username {}", request.getCommentId(), request.getUsername());
+            return true;
+        } catch (Exception ex) {
+            log.error("Like comment error with commentId {}, username: {}, error: {}", request.getCommentId(), request.getUsername(), ex.getMessage());
             return false;
         }
     }

@@ -2,6 +2,7 @@ package com.techtalk.techtalkapi.controller;
 
 import com.techtalk.techtalkapi.application.commentcreate.CreateCommentRequest;
 import com.techtalk.techtalkapi.application.commentcreate.CreateCommentResult;
+import com.techtalk.techtalkapi.application.commentlike.LikeCommentRequest;
 import com.techtalk.techtalkapi.service.CommentService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -20,5 +21,10 @@ public class CommentController {
     @DeleteMapping("/delete/{commentId}")
     public boolean delete(@PathVariable Long commentId){
         return commentService.delete(commentId);
+    }
+
+    @PutMapping("/like")
+    public boolean like(LikeCommentRequest request){
+        return commentService.like(request);
     }
 }
