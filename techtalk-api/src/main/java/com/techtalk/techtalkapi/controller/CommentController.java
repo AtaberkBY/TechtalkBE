@@ -16,4 +16,9 @@ public class CommentController {
     public CreateCommentResult create(@PathVariable Long subjectId, @RequestBody CreateCommentRequest request){
         return commentService.create(subjectId, request);
     }
+
+    @DeleteMapping("/delete/{commentId}")
+    public boolean delete(@PathVariable Long commentId){
+        return commentService.delete(commentId);
+    }
 }

@@ -29,4 +29,22 @@ public class CommentService {
             return new CreateCommentResult(false, ex.getMessage());
         }
     }
+
+    public boolean delete(Long commentId) {
+        log.info("Delete comment with commentId {}", commentId);
+        try {
+            Comment comment = commentRepository.findById(commentId).orElse(null);
+            if (comment == null) {
+                log.warn("Comment with commentId {} not found.", commentId);
+                return false;
+            }
+            commentRepository.delete(comment);
+
+            log.info("Deleted comment with commentId {}", commentId);
+            return true;
+        } catch (Exception ex) {
+            log.error("Delete comment error with commentId {}", commentId);
+            return false;
+        }
+    }
 }
