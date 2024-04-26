@@ -11,7 +11,7 @@ public class SubjectAssembler {
 
     public Subject applySubjectWithCreateRequest(SubjectCreateRequest request){
         Subject subject = new Subject();
-        subject.setUserId(request.getUserId());
+        subject.setUsername(request.getUsername());
         subject.setMessage(request.getMessage());
         subject.setTopic(request.getTopic());
         subject.setTag(request.getTag());

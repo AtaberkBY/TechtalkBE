@@ -16,8 +16,7 @@ public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "user_id")
-    private Long userId;
+    private String username;
     private String message;
     private String topic;
     private String tag;

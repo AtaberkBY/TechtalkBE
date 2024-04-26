@@ -6,9 +6,11 @@ import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateResult;
 import com.techtalk.techtalkapi.application.subjectget.GetSubjectResult;
 import com.techtalk.techtalkapi.data.CommentRepository;
 import com.techtalk.techtalkapi.data.SubjectRepository;
+import com.techtalk.techtalkapi.data.UsersRepository;
 import com.techtalk.techtalkapi.domain.model.Comment;
 import com.techtalk.techtalkapi.domain.model.Subject;
 import com.techtalk.techtalkapi.domain.assembler.SubjectAssembler;
+import com.techtalk.techtalkapi.domain.model.User;
 import com.techtalk.techtalkapi.validate.SubjectValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +32,7 @@ public class SubjectService {
     private final SubjectCreateAssembler subjectCreateAssembler;
     private final SubjectValidator subjectValidator;
     private final CommentRepository commentRepository;
+    private final UsersRepository usersRepository;
 
     public List<Subject> getAllSubjects() {
         log.info("Get All Subject started");
@@ -50,6 +53,8 @@ public class SubjectService {
 
             Subject subject = subjectAssembler.applySubjectWithCreateRequest(request);
             subjectRepository.save(subject);
+
+            givePointToUser(subject.getUsername(), 10);
 
             return subjectCreateAssembler.applySuccessResult();
         } catch (Exception ex) {
@@ -130,9 +135,12 @@ public class SubjectService {
             subject.setLikeCount(subject.getLikeCount() + 1);
             subjectRepository.save(subject);
 
+            givePointToUser(subject.getUsername(), 3);
+
             log.info("Like Subject finished with subjectId: {}", subjectId);
             return true;
         } catch (Exception ex){
+            log.error("Like Subject error with subjectId: {}, error: {}", subjectId, ex.getMessage());
             return false;
         }
     }
@@ -141,5 +149,12 @@ public class SubjectService {
         double score = 0.1 * subject.getLikeCount();
         score += subject.getDislikeCount() * -0.1;
         return score;
+    }
+
+    private void givePointToUser(String username, int point) {
+        User user = usersRepository.findByUsername(username).orElse(null);
+        assert user != null;
+        user.setPoint(user.getPoint() + point);
+        usersRepository.save(user);
     }
 }

@@ -5,9 +5,11 @@ import com.techtalk.techtalkapi.application.commentcreate.CreateCommentResult;
 import com.techtalk.techtalkapi.application.commentlike.LikeCommentRequest;
 import com.techtalk.techtalkapi.data.CommentLikesRepository;
 import com.techtalk.techtalkapi.data.CommentRepository;
+import com.techtalk.techtalkapi.data.UsersRepository;
 import com.techtalk.techtalkapi.domain.assembler.CommentAssembler;
 import com.techtalk.techtalkapi.domain.model.Comment;
 import com.techtalk.techtalkapi.domain.model.CommentLike;
+import com.techtalk.techtalkapi.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,12 +21,15 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final CommentAssembler commentAssembler;
     private final CommentLikesRepository commentLikesRepository;
+    private final UsersRepository usersRepository;
 
     public CreateCommentResult create(Long subjectId, CreateCommentRequest request) {
         log.info("Create comment with subject id {}", subjectId);
         try {
             Comment comment = commentAssembler.applyCommentWithCreateRequest(subjectId, request);
             commentRepository.save(comment);
+
+            givePointToUser(comment.getUsername(), 3);
 
             log.info("Created comment with subject id {}", subjectId);
             return new CreateCommentResult(true, "Yorum Oluşturuldu.");
@@ -73,11 +78,20 @@ public class CommentService {
             commentRepository.save(comment);
             commentLikesRepository.save(new CommentLike(request.getCommentId(), request.getUsername()));
 
+            givePointToUser(comment.getUsername(), 1);
+
             log.info("Liked comment with commentId {} and username {}", request.getCommentId(), request.getUsername());
             return true;
         } catch (Exception ex) {
             log.error("Like comment error with commentId {}, username: {}, error: {}", request.getCommentId(), request.getUsername(), ex.getMessage());
             return false;
         }
+    }
+
+    private void givePointToUser(String username, int point) {
+        User user = usersRepository.findByUsername(username).orElse(null);
+        assert user != null;
+        user.setPoint(user.getPoint() + point);
+        usersRepository.save(user);
     }
 }
