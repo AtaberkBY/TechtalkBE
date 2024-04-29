@@ -21,6 +21,7 @@ public class UserAssembler {
         user.setPoint(0);
         user.setCommentCount(0);
         user.setTitle("user");
+        user.setLevel(0);
 
         return user;
     }

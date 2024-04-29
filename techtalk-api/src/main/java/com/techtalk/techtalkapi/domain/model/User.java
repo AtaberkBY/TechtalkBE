@@ -33,4 +33,5 @@ public class User {
     private boolean isActive;
     @Column(name = "is_banned")
     private boolean isBanned;
+    private int level;
 }
