@@ -3,7 +3,7 @@ package com.techtalk.techtalkapi.service;
 import com.techtalk.techtalkapi.application.commentcreate.CreateCommentRequest;
 import com.techtalk.techtalkapi.application.commentcreate.CreateCommentResult;
 import com.techtalk.techtalkapi.application.commentlike.LikeCommentRequest;
-import com.techtalk.techtalkapi.data.CommentLikesRepository;
+import com.techtalk.techtalkapi.data.CommentLikeRepository;
 import com.techtalk.techtalkapi.data.CommentRepository;
 import com.techtalk.techtalkapi.data.SubjectRepository;
 import com.techtalk.techtalkapi.domain.assembler.CommentAssembler;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final CommentAssembler commentAssembler;
-    private final CommentLikesRepository commentLikesRepository;
+    private final CommentLikeRepository commentLikeRepository;
     private final SubjectRepository subjectRepository;
     private final PointUtility pointUtility;
 
@@ -70,10 +70,10 @@ public class CommentService {
                 return false;
             }
 
-            if (commentLikesRepository.existsByUsernameAndCommentId(request.getUsername(), request.getCommentId())) {
+            if (commentLikeRepository.existsByUsernameAndCommentId(request.getUsername(), request.getCommentId())) {
                 comment.setLikeCount(comment.getLikeCount() - 1);
                 commentRepository.save(comment);
-                commentLikesRepository.delete(commentLikesRepository.findByUsernameAndCommentId(request.getUsername(), request.getCommentId()));
+                commentLikeRepository.delete(commentLikeRepository.findByUsernameAndCommentId(request.getUsername(), request.getCommentId()));
 
                 log.info("Unliked comment with commentId {} and username {}", request.getCommentId(), request.getUsername());
                 return true;
@@ -81,7 +81,7 @@ public class CommentService {
 
             comment.setLikeCount(comment.getLikeCount() + 1);
             commentRepository.save(comment);
-            commentLikesRepository.save(new CommentLike(request.getCommentId(), request.getUsername()));
+            commentLikeRepository.save(new CommentLike(request.getCommentId(), request.getUsername()));
 
             pointUtility.givePointToUser(comment.getUsername(), 1);
 

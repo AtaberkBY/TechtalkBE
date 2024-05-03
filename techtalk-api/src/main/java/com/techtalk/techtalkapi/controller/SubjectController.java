@@ -3,6 +3,7 @@ package com.techtalk.techtalkapi.controller;
 import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateRequest;
 import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateResult;
 import com.techtalk.techtalkapi.application.subjectget.GetSubjectResult;
+import com.techtalk.techtalkapi.application.subjectlike.LikeSubjectRequest;
 import com.techtalk.techtalkapi.domain.model.Subject;
 import com.techtalk.techtalkapi.service.SubjectService;
 import lombok.AllArgsConstructor;
@@ -42,8 +43,8 @@ public class SubjectController {
         return subjectService.getPopularSubjects();
     }
 
-    @PutMapping("/like/{subjectId}")
-    public boolean subjectLike(@PathVariable Long subjectId) {
-        return subjectService.likeSubject(subjectId);
+    @PutMapping("/like")
+    public boolean subjectLike(@RequestBody LikeSubjectRequest likeSubjectRequest) {
+        return subjectService.likeSubject(likeSubjectRequest);
     }
 }

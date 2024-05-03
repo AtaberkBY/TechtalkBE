@@ -4,12 +4,15 @@ import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateAssembler
 import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateRequest;
 import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateResult;
 import com.techtalk.techtalkapi.application.subjectget.GetSubjectResult;
+import com.techtalk.techtalkapi.application.subjectlike.LikeSubjectRequest;
 import com.techtalk.techtalkapi.data.CommentRepository;
+import com.techtalk.techtalkapi.data.SubjectLikeRepository;
 import com.techtalk.techtalkapi.data.SubjectRepository;
 import com.techtalk.techtalkapi.data.UsersRepository;
 import com.techtalk.techtalkapi.domain.model.Comment;
 import com.techtalk.techtalkapi.domain.model.Subject;
 import com.techtalk.techtalkapi.domain.assembler.SubjectAssembler;
+import com.techtalk.techtalkapi.domain.model.SubjectLike;
 import com.techtalk.techtalkapi.domain.model.User;
 import com.techtalk.techtalkapi.utility.PointUtility;
 import com.techtalk.techtalkapi.validate.SubjectValidator;
@@ -32,6 +35,7 @@ public class SubjectService {
     private final SubjectAssembler subjectAssembler;
     private final SubjectCreateAssembler subjectCreateAssembler;
     private final SubjectValidator subjectValidator;
+    private final SubjectLikeRepository subjectLikeRepository;
     private final CommentRepository commentRepository;
     private final UsersRepository usersRepository;
     private final PointUtility pointUtility;
@@ -131,23 +135,33 @@ public class SubjectService {
         }
     }
 
-    public boolean likeSubject(Long subjectId) {
-        log.info("Like Subject started with subjectId: {}", subjectId);
+    public boolean likeSubject(LikeSubjectRequest request) {
+        log.info("Like Subject started with subjectId: {}", request.getSubjectId());
         try {
-            Optional<Subject> subjectOptional = subjectRepository.findById(subjectId);
-            if (subjectOptional.isEmpty()) {
+            Subject subject = subjectRepository.findById(request.getSubjectId()).orElse(null);
+            if (Objects.isNull(subject)) {
                 return false;
             }
-            Subject subject = subjectOptional.get();
+
+            if (subjectLikeRepository.existsByUsernameAndSubjectId(request.getUsername(), request.getSubjectId())) {
+                subject.setLikeCount(subject.getLikeCount() - 1);
+                subjectRepository.save(subject);
+                subjectLikeRepository.delete(subjectLikeRepository.findByUsernameAndSubjectId(request.getUsername(), request.getSubjectId()));
+
+                log.info("Unliked subject with subjectId {} and username {}", request.getSubjectId(), request.getUsername());
+                return true;
+            }
+
             subject.setLikeCount(subject.getLikeCount() + 1);
             subjectRepository.save(subject);
+            subjectLikeRepository.save(new SubjectLike(request.getSubjectId(), request.getUsername()));
 
             pointUtility.givePointToUser(subject.getUsername(), 3);
 
-            log.info("Like Subject finished with subjectId: {}", subjectId);
+            log.info("Like Subject finished with subjectId: {}", request.getSubjectId());
             return true;
-        } catch (Exception ex){
-            log.error("Like Subject error with subjectId: {}, error: {}", subjectId, ex.getMessage());
+        } catch (Exception ex) {
+            log.error("Like Subject error with subjectId: {}, error: {}", request.getSubjectId(), ex.getMessage());
             return false;
         }
     }
