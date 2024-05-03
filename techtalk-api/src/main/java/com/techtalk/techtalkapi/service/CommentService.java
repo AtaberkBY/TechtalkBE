@@ -5,9 +5,11 @@ import com.techtalk.techtalkapi.application.commentcreate.CreateCommentResult;
 import com.techtalk.techtalkapi.application.commentlike.LikeCommentRequest;
 import com.techtalk.techtalkapi.data.CommentLikesRepository;
 import com.techtalk.techtalkapi.data.CommentRepository;
+import com.techtalk.techtalkapi.data.SubjectRepository;
 import com.techtalk.techtalkapi.domain.assembler.CommentAssembler;
 import com.techtalk.techtalkapi.domain.model.Comment;
 import com.techtalk.techtalkapi.domain.model.CommentLike;
+import com.techtalk.techtalkapi.domain.model.Subject;
 import com.techtalk.techtalkapi.utility.PointUtility;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +22,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final CommentAssembler commentAssembler;
     private final CommentLikesRepository commentLikesRepository;
+    private final SubjectRepository subjectRepository;
     private final PointUtility pointUtility;
 
     public CreateCommentResult create(Long subjectId, CreateCommentRequest request) {
@@ -27,8 +30,11 @@ public class CommentService {
         try {
             Comment comment = commentAssembler.applyCommentWithCreateRequest(subjectId, request);
             commentRepository.save(comment);
-
             pointUtility.givePointToUser(comment.getUsername(), 3);
+
+            Subject subject = subjectRepository.getReferenceById(subjectId);
+            subject.setCommentCount(subject.getCommentCount() + 1);
+            subjectRepository.save(subject);
 
             log.info("Created comment with subject id {}", subjectId);
             return new CreateCommentResult(true, "Yorum Oluşturuldu.");

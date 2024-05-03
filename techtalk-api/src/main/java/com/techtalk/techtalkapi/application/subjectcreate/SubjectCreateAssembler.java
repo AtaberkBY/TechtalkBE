@@ -12,6 +12,7 @@ public class SubjectCreateAssembler {
                 MessageConfig.get(message)
         );
     }
+
     public SubjectCreateResult applySuccessResult(){
         return new SubjectCreateResult(
                 true,

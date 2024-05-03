@@ -6,9 +6,11 @@ import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateResult;
 import com.techtalk.techtalkapi.application.subjectget.GetSubjectResult;
 import com.techtalk.techtalkapi.data.CommentRepository;
 import com.techtalk.techtalkapi.data.SubjectRepository;
+import com.techtalk.techtalkapi.data.UsersRepository;
 import com.techtalk.techtalkapi.domain.model.Comment;
 import com.techtalk.techtalkapi.domain.model.Subject;
 import com.techtalk.techtalkapi.domain.assembler.SubjectAssembler;
+import com.techtalk.techtalkapi.domain.model.User;
 import com.techtalk.techtalkapi.utility.PointUtility;
 import com.techtalk.techtalkapi.validate.SubjectValidator;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ public class SubjectService {
     private final SubjectCreateAssembler subjectCreateAssembler;
     private final SubjectValidator subjectValidator;
     private final CommentRepository commentRepository;
+    private final UsersRepository usersRepository;
     private final PointUtility pointUtility;
 
     public List<Subject> getAllSubjects() {
@@ -50,7 +53,12 @@ public class SubjectService {
                 return subjectCreateAssembler.applyFailureResult(validateMessage);
             }
 
-            Subject subject = subjectAssembler.applySubjectWithCreateRequest(request);
+            String userProfilePhotoUrl = usersRepository.findByUsername(request.getUsername())
+                    .map(User::getProfilePhotoUrl)
+                    .filter(url -> !url.isEmpty())
+                    .orElse(null);
+
+            Subject subject = subjectAssembler.applySubjectWithCreateRequest(request, userProfilePhotoUrl);
             subjectRepository.save(subject);
 
             pointUtility.givePointToUser(subject.getUsername(), 10);

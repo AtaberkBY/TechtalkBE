@@ -27,4 +27,6 @@ public class Subject {
     @Column(name = "created_date")
     private LocalDateTime createdDate;
     private boolean isActive;
+    private int commentCount;
+    private String userProfilePhotoUrl;
 }
