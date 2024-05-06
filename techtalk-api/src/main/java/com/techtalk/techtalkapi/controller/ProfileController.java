@@ -1,12 +1,10 @@
 package com.techtalk.techtalkapi.controller;
 
 import com.techtalk.techtalkapi.application.profile.ProfileResult;
+import com.techtalk.techtalkapi.application.profilephoto.ProfilePhotoRequest;
 import com.techtalk.techtalkapi.service.ProfileService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/profile")
@@ -19,4 +17,8 @@ public class ProfileController {
         return profileService.profile(username);
     }
 
+    @PutMapping("/profile-photo")
+    public boolean profilePhoto(@RequestParam ProfilePhotoRequest request) {
+        return profileService.profilePhotoChange(request);
+    }
 }
