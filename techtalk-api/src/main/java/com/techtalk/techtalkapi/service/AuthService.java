@@ -1,15 +1,17 @@
 package com.techtalk.techtalkapi.service;
 
-import com.techtalk.techtalkapi.application.forgotpassword.ForgotPasswordRequest;
-import com.techtalk.techtalkapi.application.forgotpassword.ForgotPasswordResult;
+import com.techtalk.techtalkapi.application.passwordchange.ChangePasswordRequest;
+import com.techtalk.techtalkapi.application.passwordchange.ChangePasswordResponse;
+import com.techtalk.techtalkapi.application.passwordforgot.ForgotPasswordRequest;
+import com.techtalk.techtalkapi.application.passwordforgot.ForgotPasswordResult;
 import com.techtalk.techtalkapi.application.login.LoginRequest;
 import com.techtalk.techtalkapi.application.login.LoginResult;
 import com.techtalk.techtalkapi.application.login.LoginResultAssembler;
 import com.techtalk.techtalkapi.application.register.RegisterRequest;
 import com.techtalk.techtalkapi.application.register.RegisterResult;
 import com.techtalk.techtalkapi.application.register.RegisterResultAssembler;
-import com.techtalk.techtalkapi.application.resetpassword.ResetPasswordRequest;
-import com.techtalk.techtalkapi.application.resetpassword.ResetPasswordResult;
+import com.techtalk.techtalkapi.application.passwordreset.ResetPasswordRequest;
+import com.techtalk.techtalkapi.application.passwordreset.ResetPasswordResult;
 import com.techtalk.techtalkapi.data.ForgotPasswordRepository;
 import com.techtalk.techtalkapi.data.UsersRepository;
 import com.techtalk.techtalkapi.domain.model.ForgotPassword;
@@ -98,12 +100,12 @@ public class AuthService {
         }
     }
 
-    public ForgotPasswordResult forgotPassword(ForgotPasswordRequest request){
+    public ForgotPasswordResult forgotPassword(ForgotPasswordRequest request) {
         log.info("Forgot Password started with email: {}", request.getEmail());
         try {
             Optional<User> userOptional = usersRepository.findByEmail(request.getEmail());
             if (userOptional.isEmpty()) {
-                return new ForgotPasswordResult(false,"Bu email ile kayıtlı bir hesap bulunmamaktadır.");
+                return new ForgotPasswordResult(false, "Bu email ile kayıtlı bir hesap bulunmamaktadır.");
             }
 
             User user = userOptional.get();
@@ -112,49 +114,48 @@ public class AuthService {
             ForgotPassword forgotPassword = forgotPasswordAssembler.applyForgotPassword(forgotToken, user.getEmail());
             forgotPasswordRepository.save(forgotPassword);
 
-            String emailResult = emailService.sendSimpleMail(user.getEmail(),forgotToken);
-            if(emailResult.isEmpty()){
-                return new ForgotPasswordResult(false,"Sistem hatası...");
+            String emailResult = emailService.sendSimpleMail(user.getEmail(), forgotToken);
+            if (emailResult.isEmpty()) {
+                return new ForgotPasswordResult(false, "Sistem hatası...");
             }
-            return new ForgotPasswordResult(true,emailResult);
-        }
-        catch (Exception ex){
+            return new ForgotPasswordResult(true, emailResult);
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    public ResetPasswordResult resetPassword(ResetPasswordRequest request, String token){
+    public ResetPasswordResult resetPassword(ResetPasswordRequest request, String token) {
         log.info("Reset Password started with email: {}", request.getPassword());
 
-        try{
+        try {
             Optional<ForgotPassword> forgotPasswordOptional = forgotPasswordRepository.findByToken(token);
 
-            if(forgotPasswordOptional.isEmpty()){
+            if (forgotPasswordOptional.isEmpty()) {
                 return new ResetPasswordResult(false, "Kayıtlı token bulunamadı.");
             }
 
             ForgotPassword forgotPassword = forgotPasswordOptional.get();
 
-            if(forgotPassword.getCreatedDate().plusDays(1).isBefore(LocalDateTime.now())){
-                if(forgotPassword.isActive()){
+            if (forgotPassword.getCreatedDate().plusDays(1).isBefore(LocalDateTime.now())) {
+                if (forgotPassword.isActive()) {
                     deactivateToken(forgotPassword);
                 }
-                return new ResetPasswordResult(false,"Şifre sıfırlama linkinin süresi dolmuştur.");
+                return new ResetPasswordResult(false, "Şifre sıfırlama linkinin süresi dolmuştur.");
             }
 
-            if(!forgotPassword.isActive()){
-                return new ResetPasswordResult(false,"Şifre sıfırlama linki aktif değildir.");
+            if (!forgotPassword.isActive()) {
+                return new ResetPasswordResult(false, "Şifre sıfırlama linki aktif değildir.");
             }
 
             Optional<User> userOptional = usersRepository.findByEmail(forgotPassword.getEmail());
 
-            if (userOptional.isEmpty()){
-                return new ResetPasswordResult(false,"Kayıtlı kullanıcı bulunamadı.");
+            if (userOptional.isEmpty()) {
+                return new ResetPasswordResult(false, "Kayıtlı kullanıcı bulunamadı.");
             }
 
             User user = userOptional.get();
 
-            if(request.getPassword().equals(request.getConfirmPassword())){
+            if (request.getPassword().equals(request.getConfirmPassword())) {
                 String encodedPassword = encodePassword(request.getPassword());
                 user.setPassword(encodedPassword);
                 deactivateToken(forgotPassword);
@@ -162,12 +163,37 @@ public class AuthService {
                 return new ResetPasswordResult(true, "Şifreniz Başarıyla Değişti.");
             }
             return new ResetPasswordResult(false, "Şifre ve Şifre onayla alanları aynı olmalıdır.");
-        }
-        catch (Exception ex){
-            throw new RuntimeException(ex);
+        } catch (Exception ex) {
+            log.error("Reset Password Error: {}", ex.getMessage());
+            return new ResetPasswordResult(false, null);
         }
     }
-    private void deactivateToken(ForgotPassword forgotPassword){
+
+    public ChangePasswordResponse changePassword(ChangePasswordRequest request) {
+        log.info("Change Password started with username: {}", request.getUsername());
+        try {
+            User user = usersRepository.findByUsername(request.getUsername()).orElse(null);
+            if (user == null) {
+                log.error("Change Password error, user not found with username: {}", request.getUsername());
+                return new ChangePasswordResponse(false, "Kayıtlı kullanıcı bulunamadı.");
+            }
+            if (!checkPassword(request.getOldPassword(), user.getPassword())) {
+                log.warn("Change Password error, old password doesn't match with username: {}", request.getUsername());
+                return new ChangePasswordResponse(false, "Eski parola bilgisi yanlış.");
+            }
+
+            user.setPassword(encodePassword(request.getNewPassword()));
+            usersRepository.save(user);
+
+            log.info("Change Password successful with username: {}", request.getUsername());
+            return new ChangePasswordResponse(true, null);
+        } catch (Exception ex) {
+            log.error("Change Password Unexpected Error: {}", ex.getMessage());
+            return new ChangePasswordResponse(false, "Bilinmeyen bir hata oluştu.");
+        }
+    }
+
+    private void deactivateToken(ForgotPassword forgotPassword) {
         forgotPassword.setActive(false);
         forgotPasswordRepository.save(forgotPassword);
     }
@@ -188,5 +214,4 @@ public class AuthService {
                 .signWith(Keys.secretKeyFor(SignatureAlgorithm.HS512))
                 .compact();
     }
-
 }
