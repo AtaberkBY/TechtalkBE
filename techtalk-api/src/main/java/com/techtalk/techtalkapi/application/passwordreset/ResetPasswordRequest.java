@@ -1,4 +1,4 @@
-package com.techtalk.techtalkapi.application.resetpassword;
+package com.techtalk.techtalkapi.application.passwordreset;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

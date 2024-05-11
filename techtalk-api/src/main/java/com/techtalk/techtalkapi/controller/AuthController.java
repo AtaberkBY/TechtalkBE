@@ -2,12 +2,14 @@ package com.techtalk.techtalkapi.controller;
 
 import com.techtalk.techtalkapi.application.login.LoginRequest;
 import com.techtalk.techtalkapi.application.login.LoginResult;
+import com.techtalk.techtalkapi.application.passwordchange.ChangePasswordRequest;
+import com.techtalk.techtalkapi.application.passwordchange.ChangePasswordResponse;
 import com.techtalk.techtalkapi.application.register.RegisterRequest;
 import com.techtalk.techtalkapi.application.register.RegisterResult;
-import com.techtalk.techtalkapi.application.forgotpassword.ForgotPasswordRequest;
-import com.techtalk.techtalkapi.application.forgotpassword.ForgotPasswordResult;
-import com.techtalk.techtalkapi.application.resetpassword.ResetPasswordRequest;
-import com.techtalk.techtalkapi.application.resetpassword.ResetPasswordResult;
+import com.techtalk.techtalkapi.application.passwordforgot.ForgotPasswordRequest;
+import com.techtalk.techtalkapi.application.passwordforgot.ForgotPasswordResult;
+import com.techtalk.techtalkapi.application.passwordreset.ResetPasswordRequest;
+import com.techtalk.techtalkapi.application.passwordreset.ResetPasswordResult;
 import com.techtalk.techtalkapi.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +38,12 @@ public class AuthController {
 
     @PostMapping("/resetpassword/{token}")
     public @ResponseBody ResetPasswordResult resetPassword(@RequestBody ResetPasswordRequest request, @PathVariable String token) {
-        return authService.resetPassword(request,token);
+        return authService.resetPassword(request, token);
+    }
+
+    @PutMapping("/changepassword")
+    public @ResponseBody ChangePasswordResponse changePassword(@RequestBody ChangePasswordRequest request) {
+        return authService.changePassword(request);
     }
 
 }

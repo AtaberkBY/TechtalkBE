@@ -1,4 +1,4 @@
-package com.techtalk.techtalkapi.application.forgotpassword;
+package com.techtalk.techtalkapi.application.passwordchange;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ForgotPasswordRequest {
-    private String email;
+public class ChangePasswordResponse {
+    private boolean success;
+    private String resultMessage;
 }

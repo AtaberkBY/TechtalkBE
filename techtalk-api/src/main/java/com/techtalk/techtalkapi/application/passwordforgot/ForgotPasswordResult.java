@@ -1,4 +1,4 @@
-package com.techtalk.techtalkapi.application.forgotpassword;
+package com.techtalk.techtalkapi.application.passwordforgot;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
