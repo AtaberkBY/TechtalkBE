@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -43,6 +44,16 @@ public class ProfileService {
             return true;
         } catch (Exception ex) {
             log.error("Profile Photo Change error with username: {}, error: {}", request.getUsername(), ex.getMessage());
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public List<User> leaderboard() {
+        log.info("Leaderboard started");
+        try {
+            return usersRepository.getUsersOrderByPoint(true);
+        } catch (Exception ex) {
+            log.error("Leaderboard error: {}", ex.getMessage());
             throw new RuntimeException(ex);
         }
     }

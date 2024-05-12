@@ -15,6 +15,8 @@ public interface UsersRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
     boolean existsByUsername(String username);
 
+    @Query("SELECT u FROM User u WHERE u.isActive = true ORDER BY u.point DESC")
+    List<User> getUsersOrderByPoint(boolean isActive);
     @Query("SELECT u FROM User u WHERE LOWER(u.username) LIKE %:key%")
     List<User> searchUsersByUsername(String key);
 }
