@@ -110,12 +110,19 @@ public class SubjectService {
     public List<Subject> getPopularSubjects() {
         log.info("Get Popular Subjects started");
         try {
-            List<Subject> todaySubjects = subjectRepository.getAllByIsActive(true)
+            LocalDate startDate = LocalDate.now().minusMonths(1);
+            LocalDate endDate = LocalDate.now();
+
+            List<Subject> thisMonthSubjects = subjectRepository.getAllByIsActive(true)
                     .stream()
-                    .filter(subject -> subject.getCreatedDate().toLocalDate().isEqual(LocalDate.now()))
+                    .filter(subject -> {
+                        LocalDate subjectDate = subject.getCreatedDate().toLocalDate();
+                        return !subjectDate.isBefore(startDate) && !subjectDate.isAfter(endDate);
+                            }
+                            )
                     .toList();
 
-            Map<Subject, Double> subjectScores = todaySubjects.stream()
+            Map<Subject, Double> subjectScores = thisMonthSubjects.stream()
                     .collect(Collectors.toMap(
                             subject -> subject,
                             this::calculateScore
