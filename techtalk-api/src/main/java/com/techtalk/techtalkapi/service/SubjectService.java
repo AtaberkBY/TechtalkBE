@@ -116,10 +116,10 @@ public class SubjectService {
             List<Subject> thisMonthSubjects = subjectRepository.getAllByIsActive(true)
                     .stream()
                     .filter(subject -> {
-                        LocalDate subjectDate = subject.getCreatedDate().toLocalDate();
-                        return !subjectDate.isBefore(startDate) && !subjectDate.isAfter(endDate);
+                                LocalDate subjectDate = subject.getCreatedDate().toLocalDate();
+                                return !subjectDate.isBefore(startDate) && !subjectDate.isAfter(endDate);
                             }
-                            )
+                    )
                     .toList();
 
             Map<Subject, Double> subjectScores = thisMonthSubjects.stream()
