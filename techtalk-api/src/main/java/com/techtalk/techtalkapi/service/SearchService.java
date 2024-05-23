@@ -1,5 +1,6 @@
 package com.techtalk.techtalkapi.service;
 
+import java.net.URLDecoder;
 import com.techtalk.techtalkapi.application.search.SearchResult;
 import com.techtalk.techtalkapi.data.SubjectRepository;
 import com.techtalk.techtalkapi.data.UsersRepository;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
@@ -21,10 +23,12 @@ public class SearchService {
     public SearchResult search(String key) {
         log.info("Search Started with key: {}", key);
         try {
-            List<Subject> subjectList = subjectRepository.searchActiveSubjectsByKey(key);
-            List<User> userList = usersRepository.searchUsersByUsername(key);
+            String decodedKey = URLDecoder.decode(key, StandardCharsets.UTF_8);
 
-            log.info("Search Finished with key: {}", key);
+            List<Subject> subjectList = subjectRepository.searchActiveSubjectsByKey(decodedKey);
+            List<User> userList = usersRepository.searchUsersByUsername(decodedKey);
+
+            log.info("Search Finished with key: {}", decodedKey);
             return new SearchResult(true, subjectList, userList);
         } catch (Exception ex) {
             log.error("Search Failed with key: {}", key);
