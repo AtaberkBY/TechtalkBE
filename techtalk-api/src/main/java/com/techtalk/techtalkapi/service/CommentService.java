@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -24,6 +26,22 @@ public class CommentService {
     private final CommentLikeRepository commentLikeRepository;
     private final SubjectRepository subjectRepository;
     private final PointUtility pointUtility;
+
+    public Comment get(Long commentId) {
+        log.info("Get comment by commentId: {}", commentId);
+        try {
+            Comment comment = commentRepository.findById(commentId).orElse(null);
+            if (Objects.isNull(comment)) {
+                log.warn("Comment not found with commentId: {}", commentId);
+                return null;
+            }
+
+            return comment;
+        } catch (Exception ex) {
+            log.error("Get comment error: {}", ex.getMessage());
+            throw new RuntimeException(ex);
+        }
+    }
 
     public CreateCommentResult create(Long subjectId, CreateCommentRequest request) {
         log.info("Create comment with subject id {}", subjectId);
