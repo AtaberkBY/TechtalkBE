@@ -57,12 +57,12 @@ public class SubjectService {
                 return subjectCreateAssembler.applyFailureResult(validateMessage);
             }
 
-            String userProfilePhotoUrl = usersRepository.findByUsername(request.getUsername())
-                    .map(User::getProfilePhotoUrl)
-                    .filter(url -> !url.isEmpty())
+            byte[] userProfilePhoto = usersRepository.findByUsername(request.getUsername())
+                    .map(User::getProfilePhoto)
+                    .filter(photo -> photo != null && photo.length > 0)
                     .orElse(null);
 
-            Subject subject = subjectAssembler.applySubjectWithCreateRequest(request, userProfilePhotoUrl);
+            Subject subject = subjectAssembler.applySubjectWithCreateRequest(request, userProfilePhoto);
             subjectRepository.save(subject);
 
             pointUtility.givePointToUser(subject.getUsername(), 10);

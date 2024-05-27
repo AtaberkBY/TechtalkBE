@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Component
 public class SubjectAssembler {
 
-    public Subject applySubjectWithCreateRequest(SubjectCreateRequest request, String userProfilePhotoUrl){
+    public Subject applySubjectWithCreateRequest(SubjectCreateRequest request, byte[] userProfilePhotoUrl){
         Subject subject = new Subject();
         subject.setUsername(request.getUsername());
         subject.setMessage(request.getMessage());
@@ -20,7 +20,7 @@ public class SubjectAssembler {
         subject.setCreatedDate(LocalDateTime.now());
         subject.setActive(true);
         subject.setCommentCount(0);
-        subject.setUserProfilePhotoUrl(userProfilePhotoUrl);
+        subject.setUserProfilePhoto(userProfilePhotoUrl);
 
         return subject;
     }

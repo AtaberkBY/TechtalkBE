@@ -23,7 +23,7 @@ public class User {
     private String email;
     private String title;
     @Column(name = "profile_photo")
-    private byte[] profilePhotoUrl;
+    private byte[] profilePhoto;
     @Column(name = "comment_count")
     private int commentCount;
     private double point;

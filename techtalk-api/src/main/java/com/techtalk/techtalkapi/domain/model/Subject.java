@@ -28,5 +28,5 @@ public class Subject {
     private LocalDateTime createdDate;
     private boolean isActive;
     private int commentCount;
-    private String userProfilePhotoUrl;
+    private byte[] userProfilePhoto;
 }

@@ -37,7 +37,7 @@ public class ProfileService {
                 log.warn("Profile Photo Change failed, no user found with username: {}", request.getUsername());
                 return false;
             }
-            user.setProfilePhotoUrl(request.getProfilePhoto());
+            user.setProfilePhoto(request.getProfilePhoto());
             usersRepository.save(user);
 
             log.info("Profile Photo Change successful with username: {}", request.getUsername());
