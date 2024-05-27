@@ -9,5 +9,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ProfilePhotoRequest {
     private String username;
-    private String url;
+    private byte[] profilePhoto;
 }

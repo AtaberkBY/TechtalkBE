@@ -22,8 +22,8 @@ public class User {
     private String password;
     private String email;
     private String title;
-    @Column(name = "profile_photo_url")
-    private String profilePhotoUrl;
+    @Column(name = "profile_photo")
+    private byte[] profilePhotoUrl;
     @Column(name = "comment_count")
     private int commentCount;
     private double point;

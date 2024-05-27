@@ -25,8 +25,8 @@ public class PointUtility {
         int level = user.getLevel();
         String title = user.getTitle();
 
-        if(title == null) {
-        user.setTitle("Unemployed");
+        if (title == null) {
+            user.setTitle("Unemployed");
         }
 
         if (currentPoints >= 240) {
