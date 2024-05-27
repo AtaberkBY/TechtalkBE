@@ -30,7 +30,7 @@ public class CommentController {
     }
 
     @PutMapping("/like")
-    public boolean like(LikeCommentRequest request){
+    public boolean like(@RequestBody LikeCommentRequest request) {
         return commentService.like(request);
     }
 }
