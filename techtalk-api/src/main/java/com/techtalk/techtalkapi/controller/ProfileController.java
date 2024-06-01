@@ -6,6 +6,7 @@ import com.techtalk.techtalkapi.domain.model.User;
 import com.techtalk.techtalkapi.service.ProfileService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,7 +22,8 @@ public class ProfileController {
     }
 
     @PutMapping("/profile-photo")
-    public boolean profilePhoto(@RequestParam ProfilePhotoRequest request) {
+    public boolean profilePhoto(@RequestParam("username") String username, @RequestParam("profilePhoto") MultipartFile profilePhoto) {
+        ProfilePhotoRequest request = new ProfilePhotoRequest(username,profilePhoto);
         return profileService.profilePhotoChange(request);
     }
 
