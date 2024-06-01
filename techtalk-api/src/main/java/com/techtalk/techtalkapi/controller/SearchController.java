@@ -19,4 +19,9 @@ public class SearchController {
     public SearchResult search(@PathVariable String key) {
         return searchService.search(key);
     }
+
+    @GetMapping("/tag/{key}")
+    public SearchResult searchTag(@PathVariable String key) {
+        return searchService.searchTag(key);
+    }
 }

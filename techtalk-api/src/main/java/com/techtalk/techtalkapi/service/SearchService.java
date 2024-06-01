@@ -35,4 +35,19 @@ public class SearchService {
             return new SearchResult(false, null, null);
         }
     }
+
+    public SearchResult searchTag(String key) {
+        log.info("Search Tag Started with key: {}", key);
+        try {
+            String decodedKey = URLDecoder.decode(key, StandardCharsets.UTF_8);
+
+            List<Subject> subjectList = subjectRepository.searchTagByKey(decodedKey);
+
+            log.info("Search Tag Finished with key: {}", decodedKey);
+            return new SearchResult(true, subjectList);
+        } catch (Exception ex) {
+            log.error("Search Tag Failed with key: {}", key);
+            return new SearchResult(false, null);
+        }
+    }
 }

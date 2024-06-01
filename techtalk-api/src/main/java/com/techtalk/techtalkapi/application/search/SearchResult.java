@@ -17,4 +17,9 @@ public class SearchResult {
     private boolean success;
     private List<Subject> subjectList;
     private List<User> userList;
+
+    public SearchResult(boolean success, List<Subject> subjectList) {
+        this.success = success;
+        this.subjectList = subjectList;
+    }
 }

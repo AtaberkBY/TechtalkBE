@@ -14,4 +14,6 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
     @Query("SELECT s FROM Subject s WHERE (LOWER(s.tag) LIKE %:key% OR LOWER(s.topic) LIKE %:key%) AND s.isActive = true")
     List<Subject> searchActiveSubjectsByKey(@Param("key") String key);
+    @Query("SELECT s FROM Subject s WHERE LOWER(s.tag) LIKE %:key% AND s.isActive = true")
+    List<Subject> searchTagByKey(@Param("key") String key);
 }

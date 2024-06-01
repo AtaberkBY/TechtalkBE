@@ -59,7 +59,7 @@ public class SubjectService {
 
             byte[] userProfilePhoto = usersRepository.findByUsername(request.getUsername())
                     .map(User::getProfilePhoto)
-                    .filter(photo -> photo != null && photo.length > 0)
+                    .filter(photo -> photo.length > 0)
                     .orElse(null);
 
             Subject subject = subjectAssembler.applySubjectWithCreateRequest(request, userProfilePhoto);
