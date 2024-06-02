@@ -47,4 +47,9 @@ public class SubjectController {
     public boolean subjectLike(@RequestBody LikeSubjectRequest likeSubjectRequest) {
         return subjectService.likeSubject(likeSubjectRequest);
     }
+
+    @GetMapping("/trendtag")
+    public List<String> trendTags() {
+        return subjectService.getTrendTags();
+    }
 }

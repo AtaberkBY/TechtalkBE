@@ -21,10 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -125,7 +122,7 @@ public class SubjectService {
             Map<Subject, Double> subjectScores = thisMonthSubjects.stream()
                     .collect(Collectors.toMap(
                             subject -> subject,
-                            this::calculateScore
+                            this::calculateSubjectScore
                     ));
 
             List<Subject> popularSubjects = subjectScores.entrySet()
@@ -173,9 +170,55 @@ public class SubjectService {
         }
     }
 
-    private double calculateScore(Subject subject) {
+    public List<String> getTrendTags() {
+        log.info("Get Trend Tags started");
+        try {
+            List<Object[]> tagData = subjectRepository.countTagsAndLikesAndTopics();
+
+            Map<String, Integer> tagScoreMap = calculateTagScores(tagData);
+
+            List<String> sortedTagNames = tagScoreMap.entrySet()
+                    .stream()
+                    .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList());
+
+            log.info("Get Trend Tags completed successfully");
+            return sortedTagNames;
+
+        } catch (Exception ex) {
+            log.error("Get Trend Tags error: {}", ex.getMessage(), ex);
+            return Collections.emptyList();
+        }
+    }
+
+    private double calculateSubjectScore(Subject subject) {
         double score = 0.1 * subject.getLikeCount();
         score += subject.getDislikeCount() * -0.1;
         return score;
+    }
+
+    private Map<String, Integer> calculateTagScores(List<Object[]> tagData) {
+        Map<String, Integer> tagScoreMap = new HashMap<>();
+
+        for (Object[] data : tagData) {
+            String tag = (String) data[0];
+            Long count = (Long) data[1];
+            Long likeSum = (Long) data[2];
+            Long topicCount = (Long) data[3];
+
+            int score = calculateIndividualTagScore(count, likeSum, topicCount);
+            tagScoreMap.put(tag, score);
+        }
+
+        return tagScoreMap;
+    }
+
+    private int calculateIndividualTagScore(Long count, Long likeSum, Long topicCount) {
+        int countScore = count != null ? count.intValue() : 0;
+        int likeScore = likeSum != null ? likeSum.intValue() * 2 : 0;
+        int topicScore = topicCount != null ? topicCount.intValue() * 15 : 0;
+
+        return countScore + likeScore + topicScore;
     }
 }
