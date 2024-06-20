@@ -21,6 +21,11 @@ public class JobController {
         return jobService.getAllJobs();
     }
 
+    @GetMapping("/{jobId}")
+    public Job getJob(@PathVariable long jobId) {
+        return jobService.getJob(jobId);
+    }
+
     @PostMapping
     public CreateJobResult createJob(@RequestBody CreateJobRequest createJobRequest) {
         return jobService.create(createJobRequest);

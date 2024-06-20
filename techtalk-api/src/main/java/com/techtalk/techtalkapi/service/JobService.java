@@ -32,6 +32,17 @@ public class JobService {
         }
     }
 
+    public Job getJob(long id) {
+        log.info("GetJob started with id: {}", id);
+        try {
+            return jobRepository.findById(id).orElse(null);
+        } catch (Exception ex) {
+            log.error("GetJob failed with id: {} error: {}", id, ex.getMessage());
+            return null;
+        }
+    }
+
+
     public CreateJobResult create(CreateJobRequest request) {
         log.info("CreateJob started with username: {}", request.getUsername());
         try {
