@@ -1,11 +1,11 @@
 package com.techtalk.techtalkapi.controller;
 
+import com.techtalk.techtalkapi.application.jobcreate.CreateJobRequest;
+import com.techtalk.techtalkapi.application.jobcreate.CreateJobResult;
 import com.techtalk.techtalkapi.domain.model.Job;
 import com.techtalk.techtalkapi.service.JobService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,5 +19,10 @@ public class JobController {
     @GetMapping
     public List<Job> jobs() {
         return jobService.getAllJobs();
+    }
+
+    @PostMapping
+    public CreateJobResult createJob(@RequestBody CreateJobRequest createJobRequest) {
+        return jobService.create(createJobRequest);
     }
 }
