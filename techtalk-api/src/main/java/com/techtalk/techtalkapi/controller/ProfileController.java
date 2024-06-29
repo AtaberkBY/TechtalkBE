@@ -27,6 +27,11 @@ public class ProfileController {
         return profileService.profilePhotoChange(request);
     }
 
+    @PutMapping("/ban/{username}")
+    public boolean ban(@PathVariable String username) {
+        return profileService.ban(username);
+    }
+
     @GetMapping("/leaderboard")
     public List<User> leaderboard(){
         return profileService.leaderboard();

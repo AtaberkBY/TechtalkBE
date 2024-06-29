@@ -86,7 +86,7 @@ public class AuthService {
                 return loginResultAssembler.applyFailureResult("auth.login.params.invalid");
             }
 
-            if (!user.isActive()) {
+            if (!user.isActive() || user.isBanned()) {
                 return loginResultAssembler.applyFailureResult("auth.user.inactive");
             }
 

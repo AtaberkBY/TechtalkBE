@@ -48,6 +48,26 @@ public class ProfileService {
         }
     }
 
+    public boolean ban(String username) {
+        log.info("Ban started with username: {}", username);
+        try {
+            User user = usersRepository.findByUsername(username).orElse(null);
+            if (Objects.isNull(user)) {
+                log.warn("Ban failed, no user found with username: {}", username);
+                return false;
+            }
+
+            user.setBanned(true);
+            usersRepository.save(user);
+
+            log.info("Ban started successful with username: {}", username);
+            return true;
+        } catch (Exception ex){
+            log.error("Ban error with username: {}, error: {}", username, ex.getMessage());
+            return false;
+        }
+    }
+
     public List<User> leaderboard() {
         log.info("Leaderboard started");
         try {
