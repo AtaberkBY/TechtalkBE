@@ -4,6 +4,7 @@ import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateRequest;
 import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateResult;
 import com.techtalk.techtalkapi.application.subjectget.GetSubjectResult;
 import com.techtalk.techtalkapi.application.subjectlike.LikeSubjectRequest;
+import com.techtalk.techtalkapi.application.subjectupdate.UpdateSubjectRequest;
 import com.techtalk.techtalkapi.domain.model.Subject;
 import com.techtalk.techtalkapi.service.SubjectService;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,7 @@ public class SubjectController {
     }
 
     @PostMapping("/create")
-    public @ResponseBody SubjectCreateResult subjectCreate(@RequestBody SubjectCreateRequest subjectCreateRequest){
+    public @ResponseBody SubjectCreateResult subjectCreate(@RequestBody SubjectCreateRequest subjectCreateRequest) {
         return subjectService.subjectCreate(subjectCreateRequest);
     }
 
@@ -34,13 +35,18 @@ public class SubjectController {
     }
 
     @DeleteMapping("/delete/{subjectId}")
-    public boolean subjectDelete(@PathVariable Long subjectId){
+    public boolean subjectDelete(@PathVariable Long subjectId) {
         return subjectService.deleteSubject(subjectId);
     }
 
     @GetMapping("/popular")
     public List<Subject> popularSubjects() {
         return subjectService.getPopularSubjects();
+    }
+
+    @PutMapping("/update")
+    public boolean subjectUpdate(@RequestBody UpdateSubjectRequest request) {
+        return subjectService.updateSubject(request);
     }
 
     @PutMapping("/like")

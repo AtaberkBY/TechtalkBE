@@ -5,6 +5,7 @@ import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateRequest;
 import com.techtalk.techtalkapi.application.subjectcreate.SubjectCreateResult;
 import com.techtalk.techtalkapi.application.subjectget.GetSubjectResult;
 import com.techtalk.techtalkapi.application.subjectlike.LikeSubjectRequest;
+import com.techtalk.techtalkapi.application.subjectupdate.UpdateSubjectRequest;
 import com.techtalk.techtalkapi.data.CommentRepository;
 import com.techtalk.techtalkapi.data.SubjectLikeRepository;
 import com.techtalk.techtalkapi.data.SubjectRepository;
@@ -100,7 +101,28 @@ public class SubjectService {
             log.info("Delete Subject finished with subjectId: {}", subjectId);
             return true;
         } catch (Exception ex) {
-            throw new RuntimeException(ex);
+            log.error("Delete Subject failed with error: {}, subjectId: {}", ex.getMessage(), subjectId);
+            return false;
+        }
+    }
+
+    public boolean updateSubject(UpdateSubjectRequest request) {
+        log.info("Update Subject started with subjectId: {}", request.getSubjectId());
+        try {
+            Subject subject = subjectRepository.findById(request.getSubjectId()).orElse(null);
+            if (Objects.isNull(subject)) {
+                log.error("Update Subject not found for subjectId: {}", request.getSubjectId());
+                return false;
+            }
+
+            subject.setMessage(request.getMessage());
+            subjectRepository.save(subject);
+
+            log.info("Update Subject finished with subjectId: {}", request.getSubjectId());
+            return true;
+        } catch (Exception ex) {
+            log.error("Update Subject failed with error: {}, subjectId: {}", ex.getMessage(), request.getSubjectId());
+            return false;
         }
     }
 
