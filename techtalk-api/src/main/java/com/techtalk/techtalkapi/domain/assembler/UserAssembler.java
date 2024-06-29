@@ -20,7 +20,7 @@ public class UserAssembler {
         user.setCreatedDate(LocalDateTime.now());
         user.setPoint(0);
         user.setCommentCount(0);
-        user.setTitle("");
+        user.setTitle("Unemployed");
         user.setLevel(0);
         user.setUserType("user");
 
