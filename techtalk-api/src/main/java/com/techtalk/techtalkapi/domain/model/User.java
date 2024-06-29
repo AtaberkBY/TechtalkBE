@@ -34,4 +34,6 @@ public class User {
     @Column(name = "is_banned")
     private boolean isBanned;
     private int level;
+    @Column(name = "user_type")
+    private String userType;
 }
