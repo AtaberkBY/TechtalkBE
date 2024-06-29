@@ -3,6 +3,7 @@ package com.techtalk.techtalkapi.service;
 import com.techtalk.techtalkapi.application.commentcreate.CreateCommentRequest;
 import com.techtalk.techtalkapi.application.commentcreate.CreateCommentResult;
 import com.techtalk.techtalkapi.application.commentlike.LikeCommentRequest;
+import com.techtalk.techtalkapi.application.commentupdate.UpdateCommentRequest;
 import com.techtalk.techtalkapi.data.CommentLikeRepository;
 import com.techtalk.techtalkapi.data.CommentRepository;
 import com.techtalk.techtalkapi.data.SubjectRepository;
@@ -67,7 +68,7 @@ public class CommentService {
         try {
             Comment comment = commentRepository.findById(commentId).orElse(null);
             if (comment == null) {
-                log.warn("Comment with commentId {} not found.", commentId);
+                log.warn("Delete Comment with commentId {} not found.", commentId);
                 return false;
             }
             commentRepository.delete(comment);
@@ -76,6 +77,26 @@ public class CommentService {
             return true;
         } catch (Exception ex) {
             log.error("Delete comment error with commentId {}, error: {}", commentId, ex.getMessage());
+            return false;
+        }
+    }
+
+    public boolean update(UpdateCommentRequest request) {
+        log.info("Update comment with commentId {}", request.getCommentId());
+        try {
+            Comment comment = commentRepository.findById(request.getCommentId()).orElse(null);
+            if (comment == null) {
+                log.warn("Update Comment with commentId {} not found.", request.getCommentId());
+                return false;
+            }
+
+            comment.setMessage(request.getMessage());
+            commentRepository.save(comment);
+
+            log.info("Updated comment with commentId {}", request.getCommentId());
+            return true;
+        } catch (Exception ex){
+            log.error("Update comment error with commentId {}, error: {}", request.getCommentId(), ex.getMessage());
             return false;
         }
     }

@@ -3,6 +3,7 @@ package com.techtalk.techtalkapi.controller;
 import com.techtalk.techtalkapi.application.commentcreate.CreateCommentRequest;
 import com.techtalk.techtalkapi.application.commentcreate.CreateCommentResult;
 import com.techtalk.techtalkapi.application.commentlike.LikeCommentRequest;
+import com.techtalk.techtalkapi.application.commentupdate.UpdateCommentRequest;
 import com.techtalk.techtalkapi.domain.model.Comment;
 import com.techtalk.techtalkapi.service.CommentService;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,11 @@ public class CommentController {
     @DeleteMapping("/delete/{commentId}")
     public boolean delete(@PathVariable Long commentId){
         return commentService.delete(commentId);
+    }
+
+    @PutMapping("/update")
+    public boolean update(@RequestBody UpdateCommentRequest request){
+        return commentService.update(request);
     }
 
     @PutMapping("/like")
