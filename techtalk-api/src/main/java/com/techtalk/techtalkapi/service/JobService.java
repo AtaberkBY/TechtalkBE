@@ -69,4 +69,23 @@ public class JobService {
             return new CreateJobResult(false, "Sistemsel hata! Lütfen daha sonra tekrar deneyiniz.");
         }
     }
+
+    public boolean delete(long jobId) {
+        log.info("DeleteJob started with id: {}", jobId);
+        try {
+            Job job = jobRepository.findById(jobId).orElse(null);
+            if (Objects.isNull(job)) {
+                log.error("DeleteJob job not found with id: {}", jobId);
+                return false;
+            }
+
+            jobRepository.delete(job);
+
+            log.info("DeleteJob finished with id: {}", jobId);
+            return true;
+        } catch (Exception ex){
+            log.error("DeleteJob failed with id: {} error: {}", jobId, ex.getMessage());
+            return false;
+        }
+    }
 }

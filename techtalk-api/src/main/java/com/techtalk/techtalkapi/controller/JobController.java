@@ -30,4 +30,9 @@ public class JobController {
     public CreateJobResult createJob(@RequestBody CreateJobRequest createJobRequest) {
         return jobService.create(createJobRequest);
     }
+
+    @DeleteMapping("/delete/{jobId}")
+    public boolean deleteJob(@PathVariable long jobId) {
+        return jobService.delete(jobId);
+    }
 }
