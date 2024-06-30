@@ -2,6 +2,7 @@ package com.techtalk.techtalkapi.controller;
 
 import com.techtalk.techtalkapi.application.jobcreate.CreateJobRequest;
 import com.techtalk.techtalkapi.application.jobcreate.CreateJobResult;
+import com.techtalk.techtalkapi.application.jobupdate.UpdateJobRequest;
 import com.techtalk.techtalkapi.domain.model.Job;
 import com.techtalk.techtalkapi.service.JobService;
 import lombok.AllArgsConstructor;
@@ -34,5 +35,10 @@ public class JobController {
     @DeleteMapping("/delete/{jobId}")
     public boolean deleteJob(@PathVariable long jobId) {
         return jobService.delete(jobId);
+    }
+
+    @PutMapping("/update")
+    public boolean updateJob(@RequestBody UpdateJobRequest request) {
+        return jobService.update(request);
     }
 }

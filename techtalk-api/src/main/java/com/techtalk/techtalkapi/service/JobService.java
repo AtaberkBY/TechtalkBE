@@ -2,6 +2,7 @@ package com.techtalk.techtalkapi.service;
 
 import com.techtalk.techtalkapi.application.jobcreate.CreateJobRequest;
 import com.techtalk.techtalkapi.application.jobcreate.CreateJobResult;
+import com.techtalk.techtalkapi.application.jobupdate.UpdateJobRequest;
 import com.techtalk.techtalkapi.data.JobRepository;
 import com.techtalk.techtalkapi.data.UsersRepository;
 import com.techtalk.techtalkapi.domain.assembler.JobAssembler;
@@ -85,6 +86,29 @@ public class JobService {
             return true;
         } catch (Exception ex){
             log.error("DeleteJob failed with id: {} error: {}", jobId, ex.getMessage());
+            return false;
+        }
+    }
+
+    public boolean update(UpdateJobRequest request) {
+        log.info("Update Job started with id: {}", request.getId());
+        try {
+            Job job = jobRepository.findById(request.getId()).orElse(null);
+            if (Objects.isNull(job)) {
+                log.error("UpdateJob job not found with id: {}", request.getId());
+                return false;
+            }
+
+            job.setTitle(request.getTitle());
+            job.setDescription(request.getDescription());
+            job.setRequirements(request.getRequirements());
+
+            jobRepository.save(job);
+
+            log.info("UpdateJob finished with id: {}", request.getId());
+            return true;
+        } catch (Exception ex){
+            log.error("UpdateJob failed with id: {} error: {}", request.getId(), ex.getMessage());
             return false;
         }
     }
