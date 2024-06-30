@@ -58,6 +58,8 @@ public class ProfileService {
             }
 
             user.setBanned(true);
+            user.setActive(false);
+            user.setTitle("Yasaklı Üye");
             usersRepository.save(user);
 
             log.info("Ban started successful with username: {}", username);
